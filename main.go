@@ -1,15 +1,16 @@
 package main
 
 import (
-	"artifactory-report-generator/artifactory"
+	"fmt"
+	"github.com/vikas-attiguppa/artifactory-report-generator/artifactory"
 	"log"
 	"net/http"
 )
 
 func handler(w http.ResponseWriter, r *http.Request) {
-	response, err := artifactory.DefaultClient().GetArchivesForRepo(r.URL.Path[1:])
+	response, err := artifactory.DefaultClient().GetTopArchivesForRepo(r.URL.Path[1:])
 	if err != nil {
-		panic(err)
+		fmt.Print("Something went wrong" + err.Error())
 	}
 	w.Header().Set("Content-Type", "application/json")
 	w.Write(response)
@@ -17,5 +18,5 @@ func handler(w http.ResponseWriter, r *http.Request) {
 
 func main() {
 	http.HandleFunc("/", handler)
-	log.Fatal(http.ListenAndServe(":80", nil))
+	log.Fatal(http.ListenAndServe(":8080", nil))
 }

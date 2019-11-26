@@ -12,10 +12,10 @@ type Artifactory interface {
 }
 
 type Results struct {
-	Results []RepoResponse `json:"results"`
+	Results []Response `json:"results"`
 }
 
-type RepoResponse struct {
+type Response struct {
 	Repo       string       `json:"repo"`
 	Path       string       `json:"path"`
 	Name       string       `json:"name"`

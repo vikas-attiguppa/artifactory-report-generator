@@ -40,7 +40,7 @@ build: fmt vet ## Build Project
 	@printf ">>> building for %s\n" $(OS)
 	@# Builds statically linked binary for target OS and Architecture (amd64).
 	@# Outputs BUILD_ARTIFACT
-	GOOS=darwin GOARCH=amd64 go build -ldflags "-s" -o ./bin/$(BUILD_ARTIFACT)
+	GOOS=$(OS) GOARCH=amd64 go build -ldflags "-s" -o ./bin/$(BUILD_ARTIFACT)
 	@printf ">>> fixing ownership (will error on osx, that's fine)\n"
 	@# Fixes ownerships of files generated as a result of building in a container.
 	@# This command will error on OSX hosts due to differences between command implementations.
@@ -70,3 +70,6 @@ test_report: clean ## Run coverage report
 	mkdir -p coverage
 	go test -race -coverprofile=coverage/$(COVFILE) ./...
 	go tool cover -html=coverage/$(COVFILE) -o coverage/$(PUBFILE)
+
+mock_gen: ## Generate mocks
+	mockgen --source=artifactory/types.go --destination=artifactory/mock.go --package=artifactory
