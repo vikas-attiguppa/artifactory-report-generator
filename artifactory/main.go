@@ -34,7 +34,7 @@ func (client *Client) GetTopArchivesForRepo(repo string) ([]byte, error) {
 
 	results := &Results{}
 	err = json.NewDecoder(resp.Body).Decode(results)
-	
+
 	if err != nil {
 		return nil, err
 	}
