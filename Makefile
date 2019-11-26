@@ -5,14 +5,15 @@ CURRENT			:= ${CURDIR}
 DEST			:= /root/$(REPO)
 COVFILE		    ?= coverage.out
 PUBFILE		    ?= coverage.html
+URL             ?= somthing.int
 
 
 ifeq ($(BUILD_ARTIFACT),)
 BUILD_ARTIFACT := $(NAME)
 endif
 
-ifeq ($(RELEASE_VERSION),)
-	RELEASE_VERSION := 0.0.0
+ifeq ($(IMAGE),)
+IMAGE := $(URL)/$(NAME)
 endif
 
 OS ?= linux
@@ -38,7 +39,6 @@ vet: ## Go Vet
 build: fmt vet ## Build Project
 	@printf ">>> building for %s\n" $(OS)
 	@# Builds statically linked binary for target OS and Architecture (amd64).
-	@# Uses linker flags to set main.Version to RELEASE_VERSION.
 	@# Outputs BUILD_ARTIFACT
 	GOOS=darwin GOARCH=amd64 go build -ldflags "-s" -o ./bin/$(BUILD_ARTIFACT)
 	@printf ">>> fixing ownership (will error on osx, that's fine)\n"
@@ -51,7 +51,7 @@ docker_build: ## Build using docker image
 	docker run --rm -e "CGO_ENABLED=0" -e "GOPATH=/go" -e "BUILD_ARTIFACT=$(BUILD_ARTIFACT)" -v "$(CURRENT):$(DEST)" -w "$(DEST)" $(BUILD_IMAGE) make build
 
 docker_login: ## Login to registry
-	docker login t
+	docker login -u="${USERNAME}" -p="${PASSWORD}" $(URL)
 
 docker_test: ## run coverage reports
 	docker run --rm -e "CGO_ENABLED=1" -e "GOPATH=/go" -v "$(CURRENT):$(DEST)" -w "$(DEST)" $(BUILD_IMAGE) \

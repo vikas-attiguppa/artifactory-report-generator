@@ -1,4 +1,4 @@
 FROM alpine:latest
 COPY ./bin/report-generator .
-EXPOSE 8080
+EXPOSE 80
 ENTRYPOINT ["./report-generator"]

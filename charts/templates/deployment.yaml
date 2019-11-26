@@ -37,6 +37,16 @@ spec:
               port: http
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
+          env:
+            {{- range $k, $v := .Values.env }}
+            - name: {{ $k }}
+              value: {{ $v | quote }}
+            {{- end }}
+            - name: ARTIFACTORY_API_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "charts.fullname" . }}
+                  key: apiKey
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
